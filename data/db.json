@@ -1,0 +1,85 @@
+{
+  "records": [
+    {
+      "title": "markquestion",
+      "artist": "eod",
+      "price": 20,
+      "year": 2012,
+      "id": "1572531139668"
+    },
+    {
+      "title": "sampler1",
+      "artist": "eod",
+      "price": 10,
+      "year": 2013,
+      "id": "1572531816690"
+    },
+    {
+      "title": "your body",
+      "artist": "prince of denmark",
+      "price": 38,
+      "year": 2014,
+      "id": "1573043373477"
+    },
+    {
+      "title": "on the edge",
+      "artist": "lost in thoughts",
+      "price": 10,
+      "year": 2022,
+      "id": "1573043429421"
+    },
+    {
+      "title": "elucubration",
+      "artist": "fernandine",
+      "price": 8,
+      "year": 1954,
+      "id": "1573043485702"
+    }
+  ],
+  "users": [
+    {
+      "first name": "soazig",
+      "last name": "legac",
+      "yob": 1988,
+      "id": "1572532294128"
+    },
+    {
+      "first name": "katel",
+      "last name": "lesieur",
+      "yob": 1987,
+      "id": "1572532314924"
+    },
+    {
+      "first name": "elina",
+      "last name": "oceane",
+      "yob": 1987,
+      "id": "1572532529589"
+    },
+    {
+      "first name": "elias",
+      "last name": "martel",
+      "yob": 1942,
+      "id": "1572532618455"
+    },
+    {
+      "first name": "nolwenn",
+      "last name": "oriac",
+      "yob": 1934,
+      "id": "1572533242338"
+    }
+  ],
+  "orders": [
+    {
+      "date": "01/01/2019",
+      "user_id": "111111111111111222",
+      "records": "183837737373",
+      "id": "1573029251676"
+    },
+    {
+      "date": "01/08/2018",
+      "user_id": "333444666666",
+      "records": "18383766666",
+      "id": "1573029485582"
+    }
+  ]
+}
