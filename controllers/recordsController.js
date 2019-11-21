@@ -3,20 +3,43 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('data/db.json');
 const db = low(adapter);
 
-exports.getRecords = (req,res,next) => {
-    const records = db.get('records').value();
-    res.status(200).send(records);
+/////////////////////////
+const Record = require ('../models/Records');
+const createError = require('http-errors');
+
+
+
+exports.getRecords = async (req,res,next) => {
+    // const records = db.get('records').value();
+    // res.status(200).send(records);
+
+    try {
+        const records = await Record.find();
+        res.status(200).send(records);
+    } catch (error) {
+        next();
+    }
 };
 
-exports.addRecord = (req,res,next) => {
-    const record = req.body;
-    db.get('records')
-    .push(record)
-    .last()
-    .assign({ id : Date.now().toString() })
-    .write();
+exports.addRecord = async (req,res,next) => {
 
-    res.status(200).send(record);
+    try {
+        const record = new Record(req.body);
+        await record.save();
+        res.status(200).send(record);
+
+    } catch (e) {
+        next(e);
+    } 
+
+    // const record = req.body;
+    // db.get('records')
+    // .push(record)
+    // .last()
+    // .assign({ id : Date.now().toString() })
+    // .write();
+
+    // res.status(200).send(record);
 };
 
 //  record /:id

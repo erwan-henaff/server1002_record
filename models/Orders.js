@@ -6,14 +6,13 @@ const OrderSchema = new Schema ({
         type: Date,
         default: Date.now
     },
-    records : [ recordId :{
+    records : [{
         type: String,
         required: true
     }],
     userId : {
         type: String,
-        required: true,
-        unique: true
+        required: true
     }
 });
 
