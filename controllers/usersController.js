@@ -22,8 +22,6 @@ exports.getUsers = async (req,res,next) => {
     } catch (error) {
         next();
     }
-
-    
 };
 
 exports.addUser = async (req,res,next) => {
@@ -32,11 +30,9 @@ exports.addUser = async (req,res,next) => {
         const user = new User(req.body);
         await user.save();
         res.status(200).send(user);
-
     } catch (e) {
         next(e);
     } 
-
 
     // const user = req.body;
     // db.get('users')
@@ -44,9 +40,7 @@ exports.addUser = async (req,res,next) => {
     // .last()
     // .assign({ id : Date.now().toString() })
     // .write();
-
     // res.status(200).send(user);
-
 };
 
 exports.getUser = async (req,res,next) => {
@@ -74,11 +68,9 @@ exports.deleteUser = async (req,res,next) => {
         const user = await User.findByIdAndDelete(req.params.id);
         if (!user) throw new createError.NotFound();
         res.status(200).send(user);
-
     } catch (e) {
         next(e);
     }
-
     // const {id} = req.params;
     // const user = db.get('users').remove({id:id}).write()
     // res.status(200).send(user);
@@ -93,7 +85,6 @@ exports.updateUser = async (req,res,next) => {
     } catch (e) {
         next(e);
     }
-
     // // lowdb code
     // const {id} = req.params;
     // const data = req.body;

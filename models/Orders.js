@@ -10,10 +10,12 @@ const OrderSchema = new Schema ({
         type: String,
         required: true
     }],
-    userId : {
+    userId_order : {
         type: String,
-        required: true
+        required: true,
+        parse: true
     }
 });
 
 module.exports = mongoose.model('Order', OrderSchema);
+
