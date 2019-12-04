@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { getRecords, addRecord, getRecord, deleteRecord, updateRecord} = require ('../controllers/recordsController');
-
+const auth = require('../middleware/authenticator');
 //////////   get all the records
 
 router.get('/', getRecords);
 
 ///////////// post a new record
 
-router.post('/', addRecord);
+router.route('/').post(auth, addRecord);
 
 // router.
 //     .route('/')
@@ -20,11 +20,11 @@ router.post('/', addRecord);
 router
     .route('/:id')
     .get(getRecord)
-    .delete(deleteRecord);
+    .delete(auth, deleteRecord);
 
 router
     .route('/:id')
     .get(getRecord)
-    .put(updateRecord);
+    .put(auth, updateRecord);
 
 module.exports = router;

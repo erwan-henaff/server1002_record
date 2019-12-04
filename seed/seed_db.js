@@ -3,6 +3,8 @@ console.log("I'm in seed");
 const mongoose = require('mongoose');
 const faker = require('faker');
 const User = require('../models/Users');
+const Record = require('../models/Records');
+const Order = require('../models/Orders');
 
 (async function(){
 
@@ -29,12 +31,19 @@ const User = require('../models/Users');
     //// deleting database form the start
 
     try {
-        await User.deleteMany(){
-        console.log('database deleted!');
+        await User.deleteMany({});
+        console.log('database user collection deleted!');
     } catch (e) {
         console.log(e);
     }
 
+    /** DELETE ALL ORDERS */
+    try {
+        await Order.deleteMany({});
+        console.log('Orders deleted');
+    } catch (e) {
+        console.log(e);
+    }
 
 
     ////// creating the fake users
@@ -50,9 +59,13 @@ const User = require('../models/Users');
                 email: faker.internet.email(),
                 password: faker.internet.password(),
                 birthday: faker.date.past(),
-                userName: faker.internet.userName()
-
+                userName: faker.internet.userName(),
+                address: {
+                    city: faker.address.city(),
+                    street: faker.address.streetName()
+                }
             });
+            const token = user.generateAuthToken();
             return user.save();
         });
 
@@ -61,6 +74,27 @@ const User = require('../models/Users');
     try {
         await Promise.all(userPromises);
         console.log('Users stored in the database!');
+    } catch (e) {
+        console.log(e);
+    }
+
+        /** CREATE 20 FAKE RECORDS */
+    const recordPromises = Array(20)
+        .fill(null)
+        .map(() => {
+            const record = new Record({
+            title: faker.random.words(),
+            artist: faker.internet.userName(),
+            year: new Date(faker.date.past()).getFullYear(),
+            price: faker.finance.amount()
+            });
+
+            return record.save();
+        });
+
+    try {
+        await Promise.all(recordPromises);
+        console.log('Records stored in the database!');
     } catch (e) {
         console.log(e);
     }

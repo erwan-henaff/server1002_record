@@ -1,7 +1,7 @@
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const adapter = new FileSync('data/db.json');
-const db = low(adapter);
+// const low = require('lowdb');
+// const FileSync = require('lowdb/adapters/FileSync');
+// const adapter = new FileSync('data/db.json');
+// const db = low(adapter);
 
 /////////////////////////
 const User = require ('../models/Users');
@@ -17,10 +17,13 @@ exports.getUsers = async (req,res,next) => {
     // res.status(200).send({users,numbUsers,allNameUsers});
 
     try {
-        const users = await User.find();
+        const users = await User
+        .find()
+        .select('-password -__v -tokens._id')
+        .sort('lastName');
         res.status(200).send(users);
     } catch (error) {
-        next();
+        next(error);
     }
 };
 
@@ -28,8 +31,13 @@ exports.addUser = async (req,res,next) => {
 
     try {
         const user = new User(req.body);
+        const token = user.generateAuthToken();
         await user.save();
-        res.status(200).send(user);
+        const data = user.getPublicFields();
+        res
+            .status(200)
+            .header('x-auth', token)
+            .send(data);
     } catch (e) {
         next(e);
     } 
@@ -46,7 +54,7 @@ exports.addUser = async (req,res,next) => {
 exports.getUser = async (req,res,next) => {
     try {
         const {id} = req.params;
-        const user = await User.findById(id);
+        const user = await User.findById(id).select('-password -__v');
         if(!user) throw new createError.NotFound();
         res.status(200).send(user);
 
@@ -65,7 +73,7 @@ exports.getUser = async (req,res,next) => {
 exports.deleteUser = async (req,res,next) => {
 
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        const user = await User.findByIdAndDelete(req.params.id).select('-password');
         if (!user) throw new createError.NotFound();
         res.status(200).send(user);
     } catch (e) {
@@ -80,7 +88,8 @@ exports.updateUser = async (req,res,next) => {
     try {
         const user = await User.findByIdAndUpdate(req.params.id,req.body, {new:true});
         if (!user) throw new createError.NotFound();
-        res.status(200).send(user);
+        const data = user.getPublicFields();
+        res.status(200).send(data);
 
     } catch (e) {
         next(e);
@@ -91,3 +100,17 @@ exports.updateUser = async (req,res,next) => {
     // const user = db.get('users').find({id:id}).assign(data).write();
     // res.status(200).send(user)
 }
+
+exports.authenticateUser = async (req, res, next) => {
+    res.status(200).send(req.user);
+
+    // try {
+    //   const token = req.header('x-auth');
+    //   const user = await User.findByToken(token);
+    //   if (!user) throw new createError.NotFound();
+  
+    //   res.status(200).send(user);
+    // } catch (e) {
+    //   next(e);
+    // }
+};

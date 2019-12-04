@@ -15,7 +15,8 @@ const RecordSchema = new Schema ({
         required: true
     },
     year: {
-        type: Date
+        type: String,
+        required: true
     }
 });
 

@@ -13,10 +13,10 @@ exports.getRecords = async (req,res,next) => {
     // const records = db.get('records').value();
     // res.status(200).send(records);
     try {
-        const records = await Record.find();
+        const records = await Record.find().select('-__v');
         res.status(200).send(records);
     } catch (error) {
-        next();
+        next(error);
     }
 };
 
@@ -43,7 +43,7 @@ exports.addRecord = async (req,res,next) => {
 exports.getRecord = async (req,res,next)=> {
     try {
         const {id} = req.params;
-        const record = await Record.findById(id);
+        const record = await Record.findById(id).select('-__v');
         if(!record) throw new createError.NotFound();
         res.status(200).send(record);
     } catch (e) {
@@ -70,7 +70,9 @@ try {
 
 exports.updateRecord = async (req,res,next)=> {
     try {
-        const record = await Record.findByIdAndUpdate(req.params.id,req.body, {new:true});
+        const record = await Record
+            .findByIdAndUpdate(req.params.id,req.body, {new:true})
+            .select('-__v');
         if (!record) throw new createError.NotFound();
         res.status(200).send(record);
     } catch (e) {
