@@ -7,7 +7,7 @@
 const User = require ('../models/Users');
 const createError = require('http-errors');
 
-
+const encryption = require('../lib/encryption');
 
 exports.getUsers = async (req,res,next) => {
     // // lowdb code
@@ -31,8 +31,12 @@ exports.addUser = async (req,res,next) => {
 
     try {
         const user = new User(req.body);
+      //  console.log(user);
         const token = user.generateAuthToken();
+     //   user.password = await encryption.encrypt(user.password);
         await user.save();
+     //   console.log(user);
+
         const data = user.getPublicFields();
         res
             .status(200)
@@ -103,14 +107,27 @@ exports.updateUser = async (req,res,next) => {
 
 exports.authenticateUser = async (req, res, next) => {
     res.status(200).send(req.user);
+};
 
-    // try {
-    //   const token = req.header('x-auth');
-    //   const user = await User.findByToken(token);
-    //   if (!user) throw new createError.NotFound();
-  
-    //   res.status(200).send(user);
-    // } catch (e) {
-    //   next(e);
-    // }
+exports.loginUser = async (req, res,next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    try {
+        const user = await User.findOne({email:email});
+        const token = user.generateAuthToken();
+        console.log("1")
+        const canLogin = await user.checkPassword(password);
+        console.log("2")
+        console.log(canLogin)
+        if (!canLogin) throw new createError.NotFound("hash not matching");
+        const data = user.getPublicFields();
+
+        res
+            .status(200)
+            .header('x-auth', token)
+            .send(data);
+    } catch (err) {
+        next(err);
+    }
 };

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 const Address = require('./Address');
 const jwt = require('jsonwebtoken');
+const encryption = require('../lib/encryption');
 
 
 const UserSchema = new Schema ({
@@ -74,13 +75,24 @@ UserSchema.methods.generateAuthToken = function () {
         }, 'babylon')
         .toString();
 
-    user.tokens.push({
-        access:access,
-        token:token 
-    })
-
+    // user.tokens.push({
+    //     access:access,
+    //     token:token 
+    // })
     return token;
 } 
+
+UserSchema.methods.checkPassword = async function(password) {
+    const user = this;
+    console.log(password);
+    console.log(user.password);
+    // below password is the password from the request and 
+    // user.password is the hash from the user document in the database
+    return await encryption.compare(password, user.password);
+};
+
+
+
 
 UserSchema.methods.getPublicFields = function () {
     return {
@@ -105,10 +117,20 @@ UserSchema.statics.findByToken = function(token) {
     }
     console.log(decoded);
     return User.findOne({
-      _id: decoded.id,
-      'tokens.token': token,
-      'tokens.access': decoded.access
+      _id: decoded.id
     });
 };
+
+UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    console.log("22222222222222222")
+    console.log(this.password)
+    this.password = await encryption.encrypt(this.password);
+
+    console.log(this.password);
+    next();
+
+
+});
 
 module.exports = mongoose.model('User', UserSchema);

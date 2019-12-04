@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { getUsers, addUser, getUser, updateUser, deleteUser, authenticateUser } = require ('../controllers/usersController');
+const { getUsers, addUser, getUser, updateUser, deleteUser, authenticateUser, loginUser } = require ('../controllers/usersController');
 const auth = require('../middleware/authenticator')
 /////////// import validation fonction (express validator)
 // const { userValidationRules,userValidationErrorHandling} = require('../validators/validators');
@@ -13,7 +13,7 @@ const { userValidationRules } = require("../validators/validators");
 
 // router.get('/', getUsers);
 
-///////////// post a new record
+///////////// post a new user;
 
 router.post('/', validateInputs(userValidationRules), addUser);
 
@@ -25,6 +25,8 @@ router.route('/').get(auth, getUsers)
 // router.post('/', addUser);
  
 // router.route('/me').get(auth, authenticateUser);
+
+router.route('/login').post(loginUser);
 
 router
     .route('/:id')
